@@ -52,13 +52,13 @@
 //   );
 // }
 
-
 import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 
-// Lazy imports
-// const Layout = lazy(() => import("./pages/Layout"));
+// Normal import for Layout (so it always loads quickly)
 import Layout from "./pages/Layout";
+
+// Lazy imports for pages
 const Home = lazy(() => import("./pages/Home"));
 const About = lazy(() => import("./pages/About"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -69,14 +69,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 export default function App() {
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          // <Suspense fallback={<div>Loading layout...</div>}>
-            <Layout />
-          // </Suspense>
-        }
-      >
+      <Route path="/" element={<Layout />}>
         <Route
           index
           element={
@@ -95,30 +88,17 @@ export default function App() {
           }
         />
 
+        {/* 👇 Wrap dashboard + its children in ONE Suspense */}
         <Route
           path="dashboard"
           element={
-            <Suspense fallback={<div>Loading dashboard...</div>}>
+            <Suspense fallback={<div>Loading dashboard area...</div>}>
               <Dashboard />
             </Suspense>
           }
         >
-          <Route
-            index
-            element={
-              <Suspense fallback={<div>Loading dashboard home...</div>}>
-                <DashboardHome />
-              </Suspense>
-            }
-          />
-          <Route
-            path="settings"
-            element={
-              <Suspense fallback={<div>Loading settings...</div>}>
-                <DashboardSettings />
-              </Suspense>
-            }
-          />
+          <Route index element={<DashboardHome />} />
+          <Route path="settings" element={<DashboardSettings />} />
         </Route>
 
         <Route
