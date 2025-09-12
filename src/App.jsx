@@ -57,8 +57,8 @@ import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 
 // Lazy imports
-const Layout = lazy(() => import("./pages/Layout"));
-// import Layout from "./pages/Layout";
+// const Layout = lazy(() => import("./pages/Layout"));
+import Layout from "./pages/Layout";
 const Home = lazy(() => import("./pages/Home"));
 const About = lazy(() => import("./pages/About"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -72,9 +72,9 @@ export default function App() {
       <Route
         path="/"
         element={
-          <Suspense fallback={<div>Loading layout...</div>}>
+          // <Suspense fallback={<div>Loading layout...</div>}>
             <Layout />
-           </Suspense>
+          // </Suspense>
         }
       >
         <Route
