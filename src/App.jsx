@@ -58,6 +58,7 @@ import { Suspense, lazy } from "react";
 
 // Lazy imports
 const Layout = lazy(() => import("./pages/Layout"));
+// import Layout from "./pages/Layout";
 const Home = lazy(() => import("./pages/Home"));
 const About = lazy(() => import("./pages/About"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -67,20 +68,68 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 
 export default function App() {
   return (
-    <Suspense fallback={<div>⏳ Loading page...</div>}>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="about" element={<About />} />
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <Suspense fallback={<div>Loading layout...</div>}>
+            <Layout />
+           </Suspense>
+        }
+      >
+        <Route
+          index
+          element={
+            <Suspense fallback={<div>Loading home...</div>}>
+              <Home />
+            </Suspense>
+          }
+        />
 
-          <Route path="dashboard" element={<Dashboard />}>
-            <Route index element={<DashboardHome />} />
-            <Route path="settings" element={<DashboardSettings />} />
-          </Route>
+        <Route
+          path="about"
+          element={
+            <Suspense fallback={<div>Loading about page...</div>}>
+              <About />
+            </Suspense>
+          }
+        />
 
-          <Route path="*" element={<NotFound />} />
+        <Route
+          path="dashboard"
+          element={
+            <Suspense fallback={<div>Loading dashboard...</div>}>
+              <Dashboard />
+            </Suspense>
+          }
+        >
+          <Route
+            index
+            element={
+              <Suspense fallback={<div>Loading dashboard home...</div>}>
+                <DashboardHome />
+              </Suspense>
+            }
+          />
+          <Route
+            path="settings"
+            element={
+              <Suspense fallback={<div>Loading settings...</div>}>
+                <DashboardSettings />
+              </Suspense>
+            }
+          />
         </Route>
-      </Routes>
-    </Suspense>
+
+        <Route
+          path="*"
+          element={
+            <Suspense fallback={<div>Loading not found...</div>}>
+              <NotFound />
+            </Suspense>
+          }
+        />
+      </Route>
+    </Routes>
   );
 }
