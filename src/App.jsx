@@ -1,59 +1,34 @@
-import { Routes, Route } from "react-router-dom";
-import { Suspense, lazy } from "react";
-import Layout from "./pages/Layout";
-import Loading from "./compoenents/Loading"; // 👈 import Loading
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Suspense } from "react";
+import Loading from "./compoenents/Loading";
 
-// Lazy imports
-const Home = lazy(() => import("./pages/Home"));
-const About = lazy(() => import("./pages/About"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const DashboardHome = lazy(() => import("./pages/DashboardHome"));
-const DashboardSettings = lazy(() => import("./pages/DashboardSettings"));
-const NotFound = lazy(() => import("./pages/NotFound"));
+// Define routes with lazy imports
+const router = createBrowserRouter([
+  {
+    path: "/",
+    lazy: () => import("./pages/Layout"),
+    children: [
+      { index: true, lazy: () => import("./pages/Home") },
+      { path: "about", lazy: () => import("./pages/About") },
+      {
+        path: "dashboard",
+        lazy: () => import("./pages/Dashboard"),
+        children: [
+          { index: true, lazy: () => import("./pages/DashboardHome") },
+          { path: "settings", lazy: () => import("./pages/DashboardSettings") },
+        ],
+      },
+      { path: "*", lazy: () => import("./pages/NotFound") },
+    ],
+  },
+]);
 
-export default function App() {
+const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route
-          index
-          element={
-            <Suspense fallback={<Loading message="Loading home..." />}>
-              <Home />
-            </Suspense>
-          }
-        />
-
-        <Route
-          path="about"
-          element={
-            <Suspense fallback={<Loading message="Loading about page..." />}>
-              <About />
-            </Suspense>
-          }
-        />
-
-        <Route
-          path="dashboard"
-          element={
-            <Suspense fallback={<Loading message="Loading dashboard area..." />}>
-              <Dashboard />
-            </Suspense>
-          }
-        >
-          <Route index element={<DashboardHome />} />
-          <Route path="settings" element={<DashboardSettings />} />
-        </Route>
-
-        <Route
-          path="*"
-          element={
-            <Suspense fallback={<Loading message="Loading not found..." />}>
-              <NotFound />
-            </Suspense>
-          }
-        />
-      </Route>
-    </Routes>
+    <Suspense fallback={<Loading message="loading app..." />}>
+      <RouterProvider router={router} />
+    </Suspense>
   );
-}
+};
+
+export default App;
